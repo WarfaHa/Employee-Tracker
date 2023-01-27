@@ -16,7 +16,7 @@ Built using Node.js, Inquirer, and MySQL.
 This application is built with a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and MySQL.
 
 ## Installation
-You’ll need to use the MySQL2 package to connect to your MySQL database and perform queries, the Inquirer package to interact with the user via the command line, and the console.table package to print MySQL rows to the console.
+You’ll need to use the MySQL2 package to connect to your MySQL database and perform queries, the Inquirer package to interact with the user via the command line, and the console.table package to print MySQL rows to the console. Also checkout using dotenv package to secure your MySQL password. 
 
 ## Usage
 
@@ -41,7 +41,7 @@ THEN I am prompted to select an employee to update and their new role and this i
 ## Tests
 Below is a GIF that demonstrates the functionality of the employee tracker.
 
-![GIF-of-employee-tracker](./public/assets/Gif)
+![GIF-of-employee-tracker](./assets/GIF-Employee-Tracker.gif)
 
 ## Licenses
      To view the MIT license. Click the license button above.
