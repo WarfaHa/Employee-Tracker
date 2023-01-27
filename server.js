@@ -2,8 +2,6 @@ const { promisify } = require("util");
 const cTable = require("console.table");
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
-const { connect } = require("http2");
-const { get } = require("http");
 require("dotenv").config();
 
 const connection = mysql.createConnection({
@@ -76,33 +74,52 @@ function init() {
 }
 
 function viewDept() {
-  connection.query("Select * From department", function (err, results) {
-    if (err) {
-      throw err;
+  connection.query(
+    "SELECT department.id AS id, department.name AS department FROM department",
+    function (err, results) {
+      if (err) {
+        throw err;
+      }
+      console.table(results);
+      init();
     }
-    console.table(results);
-    init();
-  });
+  );
 }
 
 function viewEmp() {
-  connection.query("Select * From employee", function (err, results) {
-    if (err) {
-      throw err;
+  connection.query(
+    `SELECT employee.id,employee.first_name, 
+  employee.last_name, 
+  role.title, 
+  department.name AS department,
+  role.salary, 
+  CONCAT (manager.first_name, " ", manager.last_name) AS manager
+FROM employee
+  LEFT JOIN role ON employee.role_id = role.id
+  LEFT JOIN department ON role.department_id = department.id
+  LEFT JOIN employee manager ON employee.manager_id = manager.id`,
+    function (err, results) {
+      if (err) {
+        throw err;
+      }
+      console.table(results);
+      init();
     }
-    console.table(results);
-    init();
-  });
+  );
 }
 
 function viewRole() {
-  connection.query("Select * From role", function (err, results) {
-    if (err) {
-      throw err;
+  connection.query(
+    `SELECT role.id, role.title, department.name AS department FROM role
+  INNER JOIN department ON role.department_id = department.id`,
+    function (err, results) {
+      if (err) {
+        throw err;
+      }
+      console.table(results);
+      init();
     }
-    console.table(results);
-    init();
-  });
+  );
 }
 
 function addDept() {
@@ -136,7 +153,7 @@ function addEmp() {
         return { managers, roles };
       });
     })
-    .then(({managers, roles}) =>
+    .then(({ managers, roles }) =>
       inquirer.prompt([
         {
           type: "input",
@@ -221,43 +238,43 @@ function updateRole() {
         return { employees, roles };
       });
     })
-    .then(({employees, roles}) =>
- inquirer
-   .prompt([
-     {
-       type: "list",
-       name: "employeeOptions",
-       message: "Which employee would you like to update?",
-       choices: employees
-     },
-     {
-       type: "list",
-       name: "newTitle",
-       message: "What is the new role would you like to update to?",
-       choices: roles
-     },
-     {
-       type: "input",
-       name: "newSalary",
-       message: "What is the new salary of this role?"
-     },
-   ])).then(function (userInput) {
-       connection.query(
-         "INSERT INTO role SET ?",
-         {
-           title: userInput.newTitle,
-           salary: userInput.newSalary,
-           //department_id: userInput.department_id
-         },
- function (err, results) {
-   if (err) {
-     throw err;
-   }
-   console.table(results);
-   init();
- }
-);
-});
+    .then(({ employees, roles }) =>
+      inquirer.prompt([
+        {
+          type: "list",
+          name: "employeeOptions",
+          message: "Which employee would you like to update?",
+          choices: employees,
+        },
+        {
+          type: "list",
+          name: "newTitle",
+          message: "What is the new role would you like to update to?",
+          choices: roles,
+        },
+        {
+          type: "input",
+          name: "newSalary",
+          message: "What is the new salary of this role?",
+        }
+      ])
+    )
+    .then(function (userInput) {
+      connection.query(
+        "INSERT INTO role SET ?",
+        {
+          title: userInput.newTitle,
+          salary: userInput.newSalary,
+        },
+        function (err, results) {
+          if (err) {
+            throw err;
+          }
+          console.table(results);
+          init();
+        }
+      );
+    });
 }
 
 // changes roles from integer id to actual value
