@@ -38,7 +38,7 @@ THEN I am prompted to enter the employee’s first name, last name, role, and ma
 WHEN I choose to update an employee role<br />
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database<br />
 
-## Tests
+## Walkthrough Video 
 Below is a GIF that demonstrates the functionality of the employee tracker.
 
 ![GIF-of-employee-tracker](./assets/GIF-Employee-Tracker.gif)
